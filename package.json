@@ -1,7 +1,7 @@
 {
   "name": "@reiwuzen/blocky",
   "version": "1.0.0",
-  "description": "A headless, block-based editor. Each row is a typed block — text, image, code, and more.",
+  "description": "Pure TypeScript block editor engine. Headless, framework-agnostic — content mutation, formatting, transforms, serialization, and history.",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,14 +10,18 @@
   ],
   "scripts": {
     "build": "tsc",
-    "clean": "rimraf dist"
+    "dev": "tsc --watch",
+    "clean": "rimraf dist",
+    "test": "tsx tests/test.ts"
   },
   "keywords": [
     "block-editor",
     "headless-editor",
     "block-based",
     "rich-text",
-    "editor-core"
+    "editor-engine",
+    "editor-core",
+    "typescript"
   ],
   "author": "Rei WuZen",
   "license": "ISC",
@@ -26,6 +30,8 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "rimraf": "^6.0.1",
+    "tsx": "^4.19.3",
     "typescript": "^5.9.3"
   },
   "exports": {
