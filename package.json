@@ -1,0 +1,37 @@
+{
+  "name": "@reiwuzen/blocky",
+  "version": "1.0.0",
+  "description": "A headless, block-based editor. Each row is a typed block — text, image, code, and more.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "block-editor",
+    "headless-editor",
+    "block-based",
+    "rich-text",
+    "editor-core"
+  ],
+  "author": "Rei WuZen",
+  "license": "ISC",
+  "dependencies": {
+    "@reiwuzen/result": "^1.0.1",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  }
+}

@@ -1,0 +1,42 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@reiwuzen/result':
+        specifier: ^1.0.1
+        version: 1.0.1
+      uuid:
+        specifier: ^13.0.0
+        version: 13.0.0
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+packages:
+
+  '@reiwuzen/result@1.0.1':
+    resolution: {integrity: sha512-Yz8v5I1HqJTe7qHaNpJcAlrYjsLX3EimcEugystYEvH1zzTiCsszHV4jxdVsDo8Hp5WA3jbndRHjBN+rqS4lmg==}
+
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+  uuid@13.0.0:
+    resolution: {integrity: sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==}
+    hasBin: true
+
+snapshots:
+
+  '@reiwuzen/result@1.0.1': {}
+
+  typescript@5.9.3: {}
+
+  uuid@13.0.0: {}
