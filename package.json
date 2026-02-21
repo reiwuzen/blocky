@@ -26,8 +26,11 @@
   "author": "Rei WuZen",
   "license": "ISC",
   "dependencies": {
-    "@reiwuzen/result": "^1.0.1",
     "uuid": "^13.0.0"
+  },
+  "peerDependencies": {
+    "@reiwuzen/result": "^1.0.1"
+
   },
   "devDependencies": {
     "rimraf": "^6.0.1",
