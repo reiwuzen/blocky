@@ -1,6 +1,6 @@
 {
   "name": "@reiwuzen/blocky",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Pure TypeScript block editor engine. Headless, framework-agnostic — content mutation, formatting, transforms, serialization, and history.",
   "type": "module",
   "main": "dist/index.js",
@@ -30,7 +30,6 @@
   },
   "peerDependencies": {
     "@reiwuzen/result": "^1.0.1"
-
   },
   "devDependencies": {
     "rimraf": "^6.0.1",
