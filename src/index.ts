@@ -24,3 +24,5 @@ export { generateId, createBlock, insertBlockAfter, deleteBlock, duplicateBlock,
 export type { Node, Block, BlockContent, BlockMeta, BlockType, AnyBlock } from "./types/block";
 
 export type {NodeSelection} from './engine/format'
+
+export {blockDeleteLastChar,blockDeleteRange,blockInsertAt,blockReplaceRange} from './engine/block'
