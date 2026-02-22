@@ -1,6 +1,6 @@
 {
   "name": "@reiwuzen/blocky",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Pure TypeScript block editor engine. Headless, framework-agnostic — content mutation, formatting, transforms, serialization, and history.",
   "type": "module",
   "main": "dist/index.js",
