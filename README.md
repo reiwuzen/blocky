@@ -202,6 +202,45 @@ undo(h).match(
 );
 ```
 
+### Cursor — `engine/cursor`
+
+Bridges the browser's flat cursor offset to the engine's `nodeIndex + offset` model.
+The browser gives a single number from `window.getSelection()` — these functions convert it.
+
+```ts
+// Convert a flat UI cursor offset → { nodeIndex, offset }
+flatToPosition(block, flatOffset): Result<CursorPosition>
+
+// Convert a flat UI selection → NodeSelection (ready for format/delete functions)
+flatToSelection(block, start, end): Result<NodeSelection>
+
+// Inverse — convert { nodeIndex, offset } back to flat offset (restore cursor in DOM)
+positionToFlat(block, nodeIndex, offset): Result<number>
+```
+
+```ts
+// Typical usage on every keypress / selection
+const sel = window.getSelection();
+flatToSelection(block, sel.anchorOffset, sel.focusOffset)
+  .andThen((nodeSel) => toggleBold(block.content, nodeSel))
+  .match(
+    (content) => updateBlock({ ...block, content }),
+    (err)     => console.error(err)
+  );
+```
+
+### Block Ops — `engine/block-ops`
+
+Wrappers around content functions that return `Result<AnyBlock>` instead of `Result<BlockContent>` —
+useful when you want the full updated block back directly.
+
+```ts
+blockInsertAt(block, nodeIndex, offset, incoming): Result<AnyBlock>
+blockDeleteLastChar(block): Result<AnyBlock>
+blockDeleteRange(block, startNodeIndex, startOffset, endNodeIndex, endOffset): Result<AnyBlock>
+blockReplaceRange(block, startNodeIndex, startOffset, endNodeIndex, endOffset, incoming): Result<AnyBlock>
+```
+
 ### Utils — `utils/block`
 
 ```ts
@@ -224,6 +263,8 @@ src/
 │   └── block.ts
 └── engine/
     ├── content.ts      ← insertAt, deleteLastChar, deleteRange, replaceRange, splitBlock, mergeBlocks
+    ├── block-ops.ts    ← blockInsertAt, blockDeleteLastChar, blockDeleteRange, blockReplaceRange
+    ├── cursor.ts       ← flatToPosition, flatToSelection, positionToFlat
     ├── format.ts       ← toggleBold, toggleItalic, toggleColor, setLink, ...
     ├── transform.ts    ← applyMarkdownTransform, changeBlockType, toggleTodo, indent/outdent
     ├── serializer.ts   ← serialize, deserialize, toMarkdown, toPlainText, ...

@@ -22,3 +22,5 @@ export { generateId, createBlock, insertBlockAfter, deleteBlock, duplicateBlock,
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 export type { Node, Block, BlockContent, BlockMeta, BlockType, AnyBlock } from "./types/block";
+
+export type {NodeSelection} from './engine/format'
