@@ -10,6 +10,9 @@ export { applyMarkdownTransform, changeBlockType, toggleTodo, indentBlock, outde
 // ─── Serializer ────────────────────────────────────────────────────────────────
 export { serialize, deserialize, serializeNodes, deserializeNodes, toPlainText, toMarkdown } from "./engine/serializer";
 
+// ─── Cursor ───────────────────────────────────────────────────────────────────
+export {flatToPosition,flatToSelection,positionToFlat,} from './engine/cursor'
+
 // ─── History ───────────────────────────────────────────────────────────────────
 export { createHistory, push, undo, redo, canUndo, canRedo, currentBlocks } from "./engine/history";
 export type { History, HistoryEntry } from "./engine/history";
