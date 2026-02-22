@@ -2,18 +2,54 @@
   "name": "@reiwuzen/blocky",
   "version": "1.1.2",
   "description": "Pure TypeScript block editor engine. Headless, framework-agnostic — content mutation, formatting, transforms, serialization, and history.",
+  "author": "Rei WuZen",
+  "license": "ISC",
+
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "sideEffects": false,
+
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+
   "files": [
     "dist"
   ],
+
+  "engines": {
+    "node": ">=18"
+  },
+
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
     "clean": "rimraf dist",
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
     "test": "tsx tests/test.ts"
   },
+
+  "dependencies": {
+    "uuid": "^13.0.0"
+  },
+
+  "peerDependencies": {
+    "@reiwuzen/result": "^1.0.1"
+  },
+
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "tsup": "^8.5.1",
+    "tsx": "^4.19.3",
+    "typescript": "^5.9.3"
+  },
+
   "keywords": [
     "block-editor",
     "headless-editor",
@@ -22,24 +58,5 @@
     "editor-engine",
     "editor-core",
     "typescript"
-  ],
-  "author": "Rei WuZen",
-  "license": "ISC",
-  "dependencies": {
-    "uuid": "^13.0.0"
-  },
-  "peerDependencies": {
-    "@reiwuzen/result": "^1.0.1"
-  },
-  "devDependencies": {
-    "rimraf": "^6.0.1",
-    "tsx": "^4.19.3",
-    "typescript": "^5.9.3"
-  },
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  }
+  ]
 }
