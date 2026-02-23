@@ -66,17 +66,41 @@ export function createBlock<T extends BlockType>(
 
 // ─── Block array helpers ───────────────────────────────────────────────────────
 
-export function insertBlockAfter<T extends BlockType>(
+export function createBlockAfter<T extends BlockType>(
   blocks: AnyBlock[],
   afterId: string,
   type: T,
   idFn?: () => string
 ): Result<{ blocks: AnyBlock[]; newId: string }, unknown> {
-  return createBlock(type, idFn).map((newBlock) => {
+  return createBlock(type, idFn).andThen((newBlock) => {
     const index = blocks.findIndex((b) => b.id === afterId);
+    if (index === -1 ) return Result.Err(`[BlockNotFound]: ${afterId}`)
     const next  = [...blocks];
     next.splice(index + 1, 0, newBlock as AnyBlock);
-    return { blocks: next, newId: newBlock.id };
+    return Result.Ok({ blocks: next, newId: newBlock.id });
+  });
+}
+
+export function insertBlockAfter(
+  blocks: AnyBlock[],
+  afterId: string,
+  insertBlock: AnyBlock
+): Result<{ blocks: AnyBlock[]; newFocusId: string }, unknown> {
+
+  const targetBlockIndex = blocks.findIndex(b => b.id === afterId);
+  if (targetBlockIndex === -1) {
+    return Result.Err(`No block found with id: ${afterId}`);
+  }
+
+  const newBlocks = [
+    ...blocks.slice(0, targetBlockIndex + 1),
+    insertBlock,
+    ...blocks.slice(targetBlockIndex + 1),
+  ];
+
+  return Result.Ok({
+    blocks: newBlocks,
+    newFocusId: insertBlock.id
   });
 }
 
@@ -104,8 +128,23 @@ export function changeBlockTypeInList<T extends BlockType>(
 
 // ─── duplicateBlock ────────────────────────────────────────────────────────────
 
-export function duplicateBlock(incoming: AnyBlock, newId: string): AnyBlock {
-  return { ...incoming, id: newId };
+export function duplicateBlock(
+  incoming: AnyBlock,
+  newId: string = crypto.randomUUID()
+): AnyBlock {
+  return {
+    ...incoming,
+    id: newId,
+    meta: { ...incoming.meta },
+    content: incoming.content.map(node => ({ ...node })),
+  } as AnyBlock;
+}
+
+export function duplicateBlockAfter(blocks:AnyBlock[], id:string, newId?:string):Result<{blocks:AnyBlock[], newFocusId: string}, unknown>{
+  const targetBlock = blocks.find(b => b.id === id)
+  if (targetBlock == null) return Result.Err(`[BlockNotFound]: ${id}`)
+    const dup = duplicateBlock(targetBlock,newId)
+    return insertBlockAfter(blocks,id, dup)
 }
 
 // ─── moveBlock ─────────────────────────────────────────────────────────────────

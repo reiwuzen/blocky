@@ -18,7 +18,7 @@ export { createHistory, push, undo, redo, canUndo, canRedo, currentBlocks } from
 export type { History, HistoryEntry } from "./engine/history";
 
 // ─── Utils ─────────────────────────────────────────────────────────────────────
-export { generateId, createBlock, insertBlockAfter, deleteBlock, duplicateBlock, moveBlock } from "./utils/block";
+export { generateId, createBlock, createBlockAfter,insertBlockAfter,duplicateBlockAfter, deleteBlock, duplicateBlock, moveBlock } from "./utils/block";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 export type { Node, Block, BlockContent, BlockMeta, BlockType, AnyBlock } from "./types/block";

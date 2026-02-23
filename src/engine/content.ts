@@ -76,7 +76,7 @@ export function insertAt<T extends BlockType>(
     if (offset < 0 || offset > node.text.length)
       return Result.Err(`offset (${offset}) out of bounds for code node`);
     const text = node.text.slice(0, offset) + incoming.text + node.text.slice(offset);
-    return Result.Ok([{ ...node, text }] as unknown as BlockContent<T>);
+    return Result.Ok([{ ...node, text }] as BlockContent<T>);
   }
 
   // ── equation block ────────────────────────────────────────────────────────
@@ -95,7 +95,7 @@ export function insertAt<T extends BlockType>(
 
   // Empty content — just push
   if (content.length === 0) {
-    return Result.Ok([incoming] as unknown as BlockContent<T>);
+    return Result.Ok([incoming] as BlockContent<T>);
   }
 
   if (nodeIndex < 0 || nodeIndex >= content.length)
