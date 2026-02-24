@@ -10,19 +10,16 @@ export { applyMarkdownTransform, changeBlockType, toggleTodo, indentBlock, outde
 // ─── Serializer ────────────────────────────────────────────────────────────────
 export { serialize, deserialize, serializeNodes, deserializeNodes, toPlainText, toMarkdown } from "./engine/serializer";
 
-// ─── Cursor ───────────────────────────────────────────────────────────────────
-export {flatToPosition,flatToSelection,positionToFlat,} from './engine/cursor'
 
 // ─── History ───────────────────────────────────────────────────────────────────
 export { createHistory, push, undo, redo, canUndo, canRedo, currentBlocks } from "./engine/history";
 export type { History, HistoryEntry } from "./engine/history";
 
 // ─── Utils ─────────────────────────────────────────────────────────────────────
-export { generateId, createBlock, createBlockAfter,insertBlockAfter,duplicateBlockAfter, deleteBlock, duplicateBlock, moveBlock } from "./utils/block";
+export { generateId, createBlock, createBlockAfter,insertBlockAfter,duplicateBlockAfter, deleteBlock, duplicateBlock, moveBlock } from "./engine/block";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 export type { Node, Block, BlockContent, BlockMeta, BlockType, AnyBlock } from "./types/block";
 
 export type {NodeSelection} from './engine/format'
 
-export {blockDeleteLastChar,blockDeleteRange,blockInsertAt,blockReplaceRange} from './engine/block'

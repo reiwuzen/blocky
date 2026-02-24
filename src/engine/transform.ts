@@ -43,16 +43,7 @@ function stripPrefix(
   return [{ ...first, text: stripped }, ...block.content.slice(1)];
 }
 
-function buildMeta(type: Exclude<RichBlockType, "paragraph">): AnyBlock["meta"] {
-  switch (type) {
-    case "bullet":
-    case "number":
-    case "todo":     return { depth: 0 };
-    case "heading1":
-    case "heading2":
-    case "heading3": return {};
-  }
-}
+
 
 // ─── Core ──────────────────────────────────────────────────────────────────────
 
@@ -99,7 +90,7 @@ export function applyMarkdownTransform(
     id: block.id,
     type: targetType,
     content: strippedContent,
-    meta: buildMeta(targetType),
+    meta: buildMetaForTarget(targetType),
   } as unknown as AnyBlock;
 
   return Result.Ok({ block: converted, converted: true });
@@ -134,7 +125,7 @@ export function changeBlockType<T extends BlockType>(
     type: targetType,
     content,
     meta,
-  } as unknown as Block<T>);
+  }  as Block<T>);
 }
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
@@ -148,7 +139,7 @@ function extractText(block: AnyBlock): string {
   if (block.type === "code")     return (block.content as [CodeNode])[0].text;
   if (block.type === "equation") return (block.content as [EquationNode])[0].latex;
   // rich block — concat text from all nodes, ignore inline code/eq
-  return (block.content as Node[])
+  return (block.content)
     .map((n) => {
       if (n.type === "text")     return n.text;
       if (n.type === "code")     return n.text;

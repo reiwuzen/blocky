@@ -1,5 +1,5 @@
 import type { Node, AnyBlock, BlockContent, BlockType } from '../types/block';
-import { generateId } from '../utils/block';
+import { generateId } from './block';
 import { Result } from '@reiwuzen/result';
 import { isTextNode, formatsMatch } from './format';
 
@@ -278,6 +278,7 @@ export function splitBlock(
 
   const nodes = block.content as Node[];
 
+  // Validate nodeIndex
   if (nodes.length > 0 && (nodeIndex < 0 || nodeIndex >= nodes.length))
     return Result.Err(`nodeIndex (${nodeIndex}) out of bounds`);
 
@@ -287,31 +288,81 @@ export function splitBlock(
   if (offset < 0 || offset > targetLen)
     return Result.Err(`offset (${offset}) out of bounds`);
 
-  // Content before cursor stays in original block
+  const atStart = nodeIndex === 0 && offset === 0;
+  const atEnd   = nodeIndex === nodes.length - 1 && offset === targetLen;
+
+
+  
+  // Content before cursor
   const beforeNodes: Node[] = [
     ...nodes.slice(0, nodeIndex),
-    ...( target && offset > 0 ? [sliceNode(target, 0, offset)!].filter(Boolean) : [] ),
+    ...(target && offset > 0 ? [sliceNode(target, 0, offset)].filter(isNode) : []),
   ];
 
-  // Content after cursor goes to new block
+  // Content after cursor
   const afterNodes: Node[] = [
-    ...( target && offset < targetLen ? [sliceNode(target, offset, targetLen)!].filter(Boolean) : [] ),
+    ...(target && offset < targetLen ? [sliceNode(target, offset, targetLen)].filter(isNode) : []),
     ...nodes.slice(nodeIndex + 1),
   ];
 
-  const original: AnyBlock = {
+  if (atStart) {
+    // Cursor at far left:
+    // Left  → empty block, preserves original type (e.g. heading stays heading)
+    // Right → new block with all content, preserves original type
+    const left: AnyBlock = {
+      ...block,
+      content: [],
+    } as AnyBlock;
+
+    const right: AnyBlock = {
+      id: generateId(),
+      type: block.type,
+      content: nodes,
+      meta: {},
+    } as AnyBlock;
+
+    return Result.Ok([left, right]);
+  }
+
+  if (atEnd) {
+    // Cursor at far right:
+    // Left  → original block with all content, preserves type
+    // Right → new empty paragraph (pressing Enter at end = new paragraph)
+    const left: AnyBlock = {
+      ...block,
+      content: nodes,
+    } as AnyBlock;
+
+    const right: AnyBlock = {
+      id: generateId(),
+      type: "paragraph",
+      content: [],
+      meta: {},
+    } as AnyBlock;
+
+    return Result.Ok([left, right]);
+  }
+
+  // Cursor in the middle:
+  // Left  → original type with content before cursor
+  // Right → new paragraph with content after cursor
+  const left: AnyBlock = {
     ...block,
     content: beforeNodes,
   } as AnyBlock;
 
-  const newBlock: AnyBlock = {
+  const right: AnyBlock = {
     id: generateId(),
     type: "paragraph",
     content: afterNodes,
     meta: {},
   } as AnyBlock;
 
-  return Result.Ok([original, newBlock]);
+  return Result.Ok([left, right]);
+}
+
+function isNode(node: Node | null): node is Node {
+  return node !== null;
 }
 
 // ─── mergeBlocks ───────────────────────────────────────────────────────────────
