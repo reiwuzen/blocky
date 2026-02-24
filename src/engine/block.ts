@@ -52,7 +52,7 @@ const defaultMeta: { [T in BlockType]: BlockMeta<T> } = {
 export function createBlock<T extends BlockType>(
   type: T,
   idFn?: () => string
-): Result<Block<T>, unknown> {
+): Result<AnyBlock, unknown> {
   return Result.try(() => {
     const block: Block<T> = {
       id:      generateId(idFn),
@@ -60,7 +60,7 @@ export function createBlock<T extends BlockType>(
       meta:    defaultMeta[type] as BlockMeta<T>,
       content: defaultContent[type] as BlockContent<T>,
     };
-    return block;
+    return block as AnyBlock;
   });
 }
 
