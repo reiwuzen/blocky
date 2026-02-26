@@ -1,10 +1,17 @@
-import type { AnyBlock, Block, BlockType, Node } from '../types/block';
-import { Result } from '@reiwuzen/result';
+import type { AnyBlock, Block, BlockType, Node } from "../types/block";
+import { Result } from "@reiwuzen/result";
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
-type RichBlockType = Extract<BlockType,
-  "paragraph" | "heading1" | "heading2" | "heading3" | "bullet" | "number" | "todo"
+type RichBlockType = Extract<
+  BlockType,
+  | "paragraph"
+  | "heading1"
+  | "heading2"
+  | "heading3"
+  | "bullet"
+  | "number"
+  | "todo"
 >;
 
 export type TransformResult = {
@@ -15,11 +22,11 @@ export type TransformResult = {
 // ─── Trigger map ───────────────────────────────────────────────────────────────
 
 const TRIGGERS: Record<string, Exclude<RichBlockType, "paragraph">> = {
-  "-":   "bullet",
-  "1.":  "number",
-  "[]":  "todo",
-  "#":   "heading1",
-  "##":  "heading2",
+  "-": "bullet",
+  "1.": "number",
+  "[]": "todo",
+  "#": "heading1",
+  "##": "heading2",
   "###": "heading3",
 };
 
@@ -33,7 +40,7 @@ function getRawText(block: Block<"paragraph">): string {
 
 function stripPrefix(
   block: Block<"paragraph">,
-  prefix: string
+  prefix: string,
 ): Block<"paragraph">["content"] {
   const first = block.content[0];
   if (!first || first.type !== "text") return block.content;
@@ -42,8 +49,6 @@ function stripPrefix(
   if (stripped.length === 0) return [];
   return [{ ...first, text: stripped }, ...block.content.slice(1)];
 }
-
-
 
 // ─── Core ──────────────────────────────────────────────────────────────────────
 
@@ -59,11 +64,10 @@ function stripPrefix(
  */
 export function applyMarkdownTransform(
   block: AnyBlock,
-  cursorOffset: number
+  cursorOffset: number,
 ): Result<TransformResult> {
   // Guard 1 — only paragraph blocks
-  if (block.type !== "paragraph")
-    return Result.Ok({ block, converted: false });
+  if (block.type !== "paragraph") return Result.Ok({ block, converted: false });
 
   const text = getRawText(block);
 
@@ -73,15 +77,13 @@ export function applyMarkdownTransform(
     .sort((a, b) => b.length - a.length)
     .find((trigger) => text === trigger || text.startsWith(trigger + " "));
 
-  if (!match)
-    return Result.Ok({ block, converted: false });
+  if (!match) return Result.Ok({ block, converted: false });
 
   // Guard 3 — cursor must be positioned right after "trigger + space"
   // e.g. "## My Title" → match="##", valid cursor range is 0..3
   // "hello ## Title" would never match since trigger must be at start
   const triggerEnd = match.length + 1; // +1 for the space
-  if (cursorOffset < triggerEnd)
-    return Result.Ok({ block, converted: false });
+  if (cursorOffset < triggerEnd) return Result.Ok({ block, converted: false });
 
   const targetType = TRIGGERS[match];
   const strippedContent = stripPrefix(block, match);
@@ -95,7 +97,6 @@ export function applyMarkdownTransform(
 
   return Result.Ok({ block: converted, converted: true });
 }
-
 
 // ─── changeBlockType ───────────────────────────────────────────────────────────
 
@@ -112,49 +113,51 @@ export function applyMarkdownTransform(
  */
 export function changeBlockType<T extends BlockType>(
   block: AnyBlock,
-  targetType: T
+  targetType: T,
 ): Result<Block<T>> {
-  if (block.type === targetType)
-    return Result.Ok(block as unknown as Block<T>);
+  if (block.type === targetType) return Result.Ok(block as Block<T>);
 
   const content = deriveContent(block, targetType);
-  const meta    = buildMetaForTarget(targetType);
+  const meta = deriveMeta(block,targetType);
 
   return Result.Ok({
     id: block.id,
     type: targetType,
     content,
     meta,
-  }  as Block<T>);
+  } as Block<T>);
 }
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
-type TextNode     = Extract<Node, { type: "text" }>;
-type CodeNode     = Extract<Node, { type: "code" }>;
+type TextNode = Extract<Node, { type: "text" }>;
+type CodeNode = Extract<Node, { type: "code" }>;
 type EquationNode = Extract<Node, { type: "equation" }>;
 
 /** Concat all readable text out of any block's content */
 function extractText(block: AnyBlock): string {
-  if (block.type === "code")     return (block.content as [CodeNode])[0].text;
-  if (block.type === "equation") return (block.content as [EquationNode])[0].latex;
+  if (block.type === "code") return (block.content as [CodeNode])[0].text;
+  if (block.type === "equation")
+    return (block.content as [EquationNode])[0].latex;
   // rich block — concat text from all nodes, ignore inline code/eq
-  return (block.content)
+  return block.content
     .map((n) => {
-      if (n.type === "text")     return n.text;
-      if (n.type === "code")     return n.text;
+      if (n.type === "text") return n.text;
+      if (n.type === "code") return n.text;
       if (n.type === "equation") return n.latex;
       return "";
     })
     .join("");
 }
 
-function deriveContent(block: AnyBlock, targetType: BlockType): AnyBlock["content"] {
+function deriveContent(
+  block: AnyBlock,
+  targetType: BlockType,
+): AnyBlock["content"] {
   const text = extractText(block);
 
   // → code
-  if (targetType === "code")
-    return [{ type: "code", text }] as [CodeNode];
+  if (targetType === "code") return [{ type: "code", text }] as [CodeNode];
 
   // → equation
   if (targetType === "equation")
@@ -163,7 +166,7 @@ function deriveContent(block: AnyBlock, targetType: BlockType): AnyBlock["conten
   // → rich block
   if (block.type === "code" || block.type === "equation") {
     // single clean TextNode, no formatters
-    return text.length ? [{ type: "text", text }] as TextNode[] : [];
+    return text.length ? ([{ type: "text", text }] as TextNode[]) : [];
   }
 
   // rich → rich — keep content as-is
@@ -174,16 +177,27 @@ function buildMetaForTarget(targetType: BlockType): AnyBlock["meta"] {
   switch (targetType) {
     case "bullet":
     case "number":
-    case "todo":     return { depth: 0 };
+    case "todo":
+      return { depth: 0 };
     case "heading1":
     case "heading2":
     case "heading3":
     case "paragraph":
     case "code":
-    case "equation": return {};
+    case "equation":
+      return {};
   }
 }
 
+function deriveMeta(block: AnyBlock, targetType: BlockType): AnyBlock["meta"] {
+  if (
+    isList(block.type) && isList(targetType)
+    
+  )
+    return block.meta;
+
+  return buildMetaForTarget(targetType);
+}
 
 // ─── toggleTodo ────────────────────────────────────────────────────────────────
 
@@ -204,16 +218,24 @@ export function toggleTodo(block: AnyBlock): Result<Block<"todo">> {
   return Result.Ok({ ...todo, meta } as Block<"todo">);
 }
 
-
 // ─── indent / outdent ──────────────────────────────────────────────────────────
 
 type IndentableBlock = Block<"bullet"> | Block<"number"> | Block<"todo">;
-type IndentableType  = "bullet" | "number" | "todo";
+type IndentableType = "bullet" | "number" | "todo";
 
 const MAX_DEPTH = 6;
 
 function isIndentable(block: AnyBlock): block is IndentableBlock {
-  return block.type === "bullet" || block.type === "number" || block.type === "todo";
+  return (
+    block.type === "bullet" || block.type === "number" || block.type === "todo"
+  );
+}
+
+function isList(type: BlockType): boolean
+{
+  return (
+    type === 'bullet' || type==='todo' || type==='number'
+  )
 }
 
 /**
@@ -222,7 +244,9 @@ function isIndentable(block: AnyBlock): block is IndentableBlock {
  */
 export function indentBlock(block: AnyBlock): Result<IndentableBlock> {
   if (!isIndentable(block))
-    return Result.Err(`indentBlock only supports bullet, number, todo — got "${block.type}"`);
+    return Result.Err(
+      `indentBlock only supports bullet, number, todo — got "${block.type}"`,
+    );
 
   if (block.meta.depth >= MAX_DEPTH)
     return Result.Err(`already at max depth (${MAX_DEPTH})`);
@@ -239,10 +263,11 @@ export function indentBlock(block: AnyBlock): Result<IndentableBlock> {
  */
 export function outdentBlock(block: AnyBlock): Result<IndentableBlock> {
   if (!isIndentable(block))
-    return Result.Err(`outdentBlock only supports bullet, number, todo — got "${block.type}"`);
+    return Result.Err(
+      `outdentBlock only supports bullet, number, todo — got "${block.type}"`,
+    );
 
-  if (block.meta.depth <= 0)
-    return Result.Err(`already at min depth (0)`);
+  if (block.meta.depth <= 0) return Result.Err(`already at min depth (0)`);
 
   return Result.Ok({
     ...block,
