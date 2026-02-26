@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@reiwuzen/result':
         specifier: ^1.0.1
-        version: 1.0.1
+        version: 1.2.0
       uuid:
         specifier: ^13.0.0
         version: 13.0.0
@@ -199,8 +199,9 @@ packages:
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
 
-  '@reiwuzen/result@1.0.1':
-    resolution: {integrity: sha512-Yz8v5I1HqJTe7qHaNpJcAlrYjsLX3EimcEugystYEvH1zzTiCsszHV4jxdVsDo8Hp5WA3jbndRHjBN+rqS4lmg==}
+  '@reiwuzen/result@1.2.0':
+    resolution: {integrity: sha512-VAsKwTs4AMxZjUZPJoiJBfZoLRlpC4VHMvsZBUbY/Q/69OoWtvXEKff77iXLjiREFl8fEIrxWmf3QqLOmroxEg==}
+    engines: {node: '>=18'}
 
   '@rollup/rollup-android-arm-eabi@4.58.0':
     resolution: {integrity: sha512-mr0tmS/4FoVk1cnaeN244A/wjvGDNItZKR8hRhnmCzygyRXYtKF5jVDSIILR1U97CTzAYmbgIj/Dukg62ggG5w==}
@@ -688,7 +689,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@reiwuzen/result@1.0.1': {}
+  '@reiwuzen/result@1.2.0': {}
 
   '@rollup/rollup-android-arm-eabi@4.58.0':
     optional: true
