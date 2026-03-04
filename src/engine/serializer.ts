@@ -177,7 +177,7 @@ function nodesToMarkdown(nodes: Node[]): string {
     .map((n) => {
       if (n.type === "code")     return `\`${n.text}\``;
       if (n.type === "equation") return `$${n.latex}$`;
-
+      if(n.type === 'ref') return `[${n.label}](${n.href})`;
       // text node — apply formatting wrappers
       let text = n.text;
       if (n.bold)          text = `**${text}**`;
