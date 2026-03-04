@@ -5,7 +5,7 @@ export { insertAt, deleteLastChar, deleteRange, replaceRange, splitBlock, mergeB
 export { formatNodes, toggleBold, toggleItalic, toggleUnderline, toggleStrikethrough, toggleHighlight, toggleColor, setLink, removeLink, mergeAdjacentNodes } from "./engine/format";
 
 // ─── Transform ─────────────────────────────────────────────────────────────────
-export { applyMarkdownTransform, changeBlockType, toggleTodo, indentBlock, outdentBlock } from "./engine/transform";
+export { applyMarkdownTransform, changeBlockType, toggleTodo, indentBlock, outdentBlock,areBlocksSame } from "./engine/transform";
 
 // ─── Serializer ────────────────────────────────────────────────────────────────
 export { serialize, deserialize, serializeNodes, deserializeNodes, toPlainText, toMarkdown } from "./engine/serializer";

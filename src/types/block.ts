@@ -16,13 +16,14 @@ export type Node =
       type: "text";
       text: string;
       highlighted?: "yellow" | "green";
-      color?: "red" | 'blue' | 'green' 
+      color?: "red" | "blue" | "green";
       bold?: true;
       italic?: true;
       underline?: true;
       strikethrough?: true;
       link?: string;
     }
+  | { type: "ref"; href: string; label: string }
   | { type: "code"; text: string }
   | { type: "equation"; latex: string };
 
@@ -31,10 +32,10 @@ export type Node =
 export type BlockMeta<T extends BlockType> = T extends "todo"
   ? { checked?: true; depth: number }
   : T extends "bullet" | "number"
-  ? { depth: number }
-  : T extends "code"
-  ? { language?: string }
-  : Record<string, never>;
+    ? { depth: number }
+    : T extends "code"
+      ? { language?: string }
+      : Record<string, never>;
 
 // ─── Block Content ─────────────────────────────────────────────────────────────
 // Rich blocks → text Node[]
@@ -44,8 +45,8 @@ export type BlockMeta<T extends BlockType> = T extends "todo"
 export type BlockContent<T extends BlockType> = T extends "code"
   ? [Extract<Node, { type: "code" }>]
   : T extends "equation"
-  ? [Extract<Node, { type: "equation" }>]
-  : Node[];
+    ? [Extract<Node, { type: "equation" }>]
+    : Node[];
 
 // ─── Block ─────────────────────────────────────────────────────────────────────
 

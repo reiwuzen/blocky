@@ -1,5 +1,5 @@
 export type EngineError  = {
-    type: 'BLockNotFound' ,
+    type: 'BLockNotFound' | 'DuplicateBlocks',
     meta:unknown,
     message:string
 }

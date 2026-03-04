@@ -11,5 +11,5 @@ const block: Block<"bullet"> = {
     },
   ],
 };
-
+console.log('input block: ', block)
 console.log(changeBlockType(block, "number").unwrap());
